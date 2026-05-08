@@ -1,11 +1,11 @@
 const User = require("../models/user");
 
 function getUsers(req, res) {
-  User.findAll({}).then((users) => res.send({ data: users }));
+  User.find({}).then((users) => res.send({ data: users }));
 }
 
 function getUser(req, res) {
-  const { id } = req.params.id;
+  const { id } = req.params;
   User.findById(id).then((user) => res.send({ data: user }));
 }
 
