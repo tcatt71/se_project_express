@@ -11,7 +11,7 @@ function getUser(req, res) {
 
 function createUser(req, res) {
   const { name, avatar } = req.body;
-  User.create(name, avatar).then((user) => res.send({ data: user }));
+  User.create({ name, avatar }).then((user) => res.send({ data: user }));
 }
 
 module.exports = { getUsers, getUser, createUser };
