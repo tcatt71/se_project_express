@@ -8,3 +8,8 @@ const {
 router.get("/items", getItems);
 router.post("/items", createItem);
 router.delete("/items/:itemId", deleteItem);
+router.use((req) =>
+  req.statusCode(404).json({
+    message: "Requested resource not found",
+  })
+);
