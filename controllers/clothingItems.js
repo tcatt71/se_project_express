@@ -8,8 +8,8 @@ function getItems(req, res) {
 
 function createItem(req, res) {
   const { name, weather, imageUrl } = req.body;
-  ClothingItem.create({ name, weather, imageUrl }).then((clothingItem) =>
-    res.send({ data: clothingItem })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id }).then(
+    (clothingItem) => res.send({ data: clothingItem })
   );
 }
 
