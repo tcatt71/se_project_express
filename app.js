@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const userRouter = require("./routes/users");
+const usersRouter = require("./routes/users");
+const clothingItemsRouter = require("./routes/clothingItems");
 
 const { PORT = 3001 } = process.env;
 const app = express();
@@ -12,6 +13,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
-app.use("/", userRouter);
+app.use("/", usersRouter);
+app.use("/", clothingItemsRouter);
 
 app.listen(PORT, () => console.log("Server is running."));
