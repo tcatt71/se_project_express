@@ -9,8 +9,7 @@ function getItems(req, res) {
   ClothingItem.find({})
     .then((clothingItems) => res.send({ data: clothingItems }))
     .catch((err) => {
-      console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
 }
 
@@ -19,7 +18,6 @@ function createItem(req, res) {
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((clothingItem) => res.send({ data: clothingItem }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).json({ message: err.message });
       }
@@ -33,7 +31,6 @@ function deleteItem(req, res) {
     .orFail()
     .then((clothingItem) => res.send({ data: clothingItem }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).json({ message: err.message });
       }
@@ -56,7 +53,6 @@ function likeItem(req, res) {
     .orFail()
     .then((like) => res.json({ data: like }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).json({ message: err.message });
       }
@@ -79,7 +75,6 @@ function dislikeItem(req, res) {
     .orFail()
     .then((like) => res.json({ data: like }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).json({ message: err.message });
       }

@@ -16,4 +16,4 @@ app.use(express.json());
 app.use("/", usersRouter);
 app.use("/", clothingItemsRouter);
 
-app.listen(PORT, () => console.log("Server is running."));
+app.listen(PORT, () => console.log("Server is running.")); // eslint-disable-line no-console
