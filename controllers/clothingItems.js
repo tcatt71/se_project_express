@@ -41,4 +41,44 @@ function deleteItem(req, res) {
     });
 }
 
-module.exports = { getItems, createItem, deleteItem };
+function likeItem(req, res) {
+  const { itemId } = req.params;
+  const { _id: userId } = req.user;
+
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $addToSet: { likes: userId } },
+    { new: true }
+  )
+    .orFail()
+    .then((like) => res.json({ data: like }))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).json({ message: err.message });
+      }
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+    });
+}
+
+function dislikeItem(req, res) {
+  const { itemId } = req.params;
+  const { _id: userId } = req.user;
+
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $pull: { likes: userId } },
+    { new: true }
+  )
+    .orFail()
+    .then((like) => res.json({ data: like }))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).json({ message: err.message });
+      }
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+    });
+}
+
+module.exports = { getItems, createItem, deleteItem, likeItem, dislikeItem };
