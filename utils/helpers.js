@@ -15,6 +15,12 @@ function getStatusCode(err) {
 
 function sendErrorResponse(res, err) {
   const statusCode = getStatusCode(err);
+
+  if (statusCode === INTERNAL_SERVER_ERROR) {
+    return res
+      .status(statusCode)
+      .json({ message: "An error has occurred on the server." });
+  }
   return res.status(statusCode).json({ message: err.message });
 }
 
