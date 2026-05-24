@@ -27,12 +27,16 @@ function createUser(req, res) {
     .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) =>
-      sendSuccessResponse(res, {
-        _id: user._id,
-        name: user.name,
-        avatar: user.avatar,
-        email: user.email,
-      })
+      sendSuccessResponse(
+        res,
+        {
+          _id: user._id,
+          name: user.name,
+          avatar: user.avatar,
+          email: user.email,
+        },
+        201
+      )
     )
     .catch((err) => sendErrorResponse(res, err));
 }
