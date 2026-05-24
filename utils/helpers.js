@@ -1,5 +1,6 @@
 const {
   BAD_REQUEST,
+  UNAUTHORIZED,
   NOT_FOUND,
   CONFLICT,
   INTERNAL_SERVER_ERROR,
@@ -8,6 +9,9 @@ const {
 function getStatusCode(err) {
   if (err.name === "CastError" || err.name === "ValidationError") {
     return BAD_REQUEST;
+  }
+  if (err.name === "AuthenticationError") {
+    return UNAUTHORIZED;
   }
   if (err.name === "DocumentNotFoundError") {
     return NOT_FOUND;
@@ -21,6 +25,11 @@ function getStatusCode(err) {
 function sendErrorResponse(res, err) {
   const statusCode = getStatusCode(err);
 
+  if (statusCode === UNAUTHORIZED) {
+    return res
+      .status(statusCode)
+      .json({ message: "Incorrect email or password" });
+  }
   if (statusCode === INTERNAL_SERVER_ERROR) {
     return res
       .status(statusCode)
