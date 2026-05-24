@@ -26,7 +26,14 @@ function createUser(req, res) {
   bcrypt
     .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
-    .then((user) => sendSuccessResponse(res, user))
+    .then((user) =>
+      sendSuccessResponse(res, {
+        _id: user._id,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+      })
+    )
     .catch((err) => sendErrorResponse(res, err));
 }
 
