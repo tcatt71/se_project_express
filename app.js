@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const usersRouter = require("./routes/users");
-const clothingItemsRouter = require("./routes/clothingItems");
+const mainRouter = require("./routes/index");
 
 const { PORT = 3001 } = process.env;
 const app = express();
@@ -13,7 +12,6 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
-app.use("/", usersRouter);
-app.use("/", clothingItemsRouter);
+app.use("/", mainRouter);
 
 app.listen(PORT);
