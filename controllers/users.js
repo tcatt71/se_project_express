@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/user");
 const { sendErrorResponse, sendSuccessResponse } = require("../utils/helpers");
 const { JWT_SECRET } = require("../utils/config");
@@ -11,8 +10,8 @@ function getUsers(req, res) {
     .catch((err) => sendErrorResponse(res, err));
 }
 
-function getUser(req, res) {
-  const { userId } = req.params;
+function getCurrentUser(req, res) {
+  const { _id: userId } = req.user;
 
   User.findById(userId)
     .orFail()
@@ -54,4 +53,4 @@ function login(req, res) {
     .catch((err) => sendErrorResponse(res, err));
 }
 
-module.exports = { getUsers, getUser, createUser, login };
+module.exports = { getUsers, getCurrentUser, createUser, login };
