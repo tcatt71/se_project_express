@@ -4,6 +4,8 @@ The back-end project is focused on creating a server for the WTWR application. Y
 
 ## Running the Project
 
+`.env.example file` - The .env.example file is provide as a template to use for your own env file. Copy its contents into your own .env file and use a value of your choosing as the JWT_SECRET variable.
+
 `npm run start` — to launch the server
 
 `npm run dev` — to launch the server with the hot reload feature

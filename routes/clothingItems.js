@@ -5,17 +5,13 @@ const {
   deleteItem,
   toggleLike,
 } = require("../controllers/clothingItems");
-const { NOT_FOUND } = require("../utils/errors");
+const { authMiddleware } = require("../middlewares/auth");
 
 router.get("/items", getItems);
+router.use(authMiddleware);
 router.post("/items", createItem);
 router.delete("/items/:itemId", deleteItem);
 router.put("/items/:itemId/likes", toggleLike);
 router.delete("/items/:itemId/likes", toggleLike);
-router.use((req, res) =>
-  res.status(NOT_FOUND).json({
-    message: "Requested resource not found",
-  })
-);
 
 module.exports = router;
