@@ -25,18 +25,12 @@ function createUser(req, res) {
   bcrypt
     .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
-    .then((user) =>
-      sendSuccessResponse(
-        res,
-        {
-          _id: user._id,
-          name: user.name,
-          avatar: user.avatar,
-          email: user.email,
-        },
-        201
-      )
-    )
+    .then((user) => {
+      const userObj = user.toObject();
+      delete userObj.password;
+
+      sendSuccessResponse(res, userObj, 201);
+    })
     .catch((err) => sendErrorResponse(res, err));
 }
 
