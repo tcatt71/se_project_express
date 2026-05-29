@@ -1,6 +1,7 @@
 const {
   BAD_REQUEST,
   UNAUTHORIZED,
+  FORBIDDEN,
   NOT_FOUND,
   CONFLICT,
   INTERNAL_SERVER_ERROR,
@@ -12,6 +13,9 @@ function getStatusCode(err) {
   }
   if (err.name === "AuthenticationError") {
     return UNAUTHORIZED;
+  }
+  if (err.name === "ForbiddenError") {
+    return FORBIDDEN;
   }
   if (err.name === "DocumentNotFoundError") {
     return NOT_FOUND;
@@ -29,6 +33,11 @@ function sendErrorResponse(res, err) {
     return res
       .status(statusCode)
       .json({ message: "Incorrect email or password" });
+  }
+  if (statusCode === FORBIDDEN) {
+    return res
+      .status(statusCode)
+      .json({ message: "You are not allowed to perform this operation" });
   }
   if (statusCode === INTERNAL_SERVER_ERROR) {
     return res
