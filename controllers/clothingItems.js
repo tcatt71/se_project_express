@@ -16,8 +16,19 @@ function createItem(req, res) {
 
 function deleteItem(req, res) {
   const { itemId } = req.params;
-  ClothingItem.findByIdAndDelete(itemId)
+
+  ClothingItem.findById(itemId)
     .orFail()
+    .then((clothingItem) => {
+      if (clothingItem.owner.toString() !== req.user._id) {
+        const err = new Error();
+        err.name = "ForbiddenError";
+
+        throw err;
+      }
+
+      return clothingItem.deleteOne();
+    })
     .then((clothingItem) => sendSuccessResponse(res, clothingItem))
     .catch((err) => sendErrorResponse(res, err));
 }
