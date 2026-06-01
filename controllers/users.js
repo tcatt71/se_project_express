@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 const User = require("../models/user");
 const { sendErrorResponse, sendSuccessResponse } = require("../utils/helpers");
 const { JWT_SECRET } = require("../utils/config");
@@ -37,7 +38,14 @@ function createUser(req, res) {
 function login(req, res) {
   const { email, password } = req.body;
 
-  User.findUserByCredentials(email, password)
+  if (!email || !password) {
+    const err = new Error("Email and password are required");
+    err.name = "ValidationError";
+
+    return sendErrorResponse(res, err);
+  }
+
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
