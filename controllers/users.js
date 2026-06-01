@@ -5,19 +5,24 @@ const User = require("../models/user");
 const { sendErrorResponse, sendSuccessResponse } = require("../utils/helpers");
 const { JWT_SECRET } = require("../utils/config");
 
-function getUsers(req, res) {
-  User.find({})
-    .then((users) => sendSuccessResponse(res, users))
-    .catch((err) => sendErrorResponse(res, err));
+async function getUsers(req, res) {
+  try {
+    const users = await User.find({});
+    return sendSuccessResponse(res, users);
+  } catch (err) {
+    return sendErrorResponse(res, err);
+  }
 }
 
-function getCurrentUser(req, res) {
+async function getCurrentUser(req, res) {
   const { _id: userId } = req.user;
 
-  User.findById(userId)
-    .orFail()
-    .then((user) => sendSuccessResponse(res, user))
-    .catch((err) => sendErrorResponse(res, err));
+  try {
+    const user = await User.findById(userId).orFail();
+    return sendSuccessResponse(res, user);
+  } catch (err) {
+    return sendErrorResponse(res, err);
+  }
 }
 
 function createUser(req, res) {
