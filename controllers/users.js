@@ -41,7 +41,7 @@ async function createUser(req, res) {
   }
 }
 
-function login(req, res) {
+async function login(req, res) {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -51,27 +51,32 @@ function login(req, res) {
     return sendErrorResponse(res, err);
   }
 
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
-      return sendSuccessResponse(res, { token });
-    })
-    .catch((err) => sendErrorResponse(res, err));
+  try {
+    const user = await User.findUserByCredentials(email, password);
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    return sendSuccessResponse(res, { token });
+  } catch (err) {
+    return sendErrorResponse(res, err);
+  }
 }
 
-function updateProfile(req, res) {
+async function updateProfile(req, res) {
   const { _id: userId } = req.user;
   const { name, avatar } = req.body;
 
   const update = { name, avatar };
   const options = { runValidators: true, new: true };
 
-  User.findByIdAndUpdate(userId, update, options)
-    .orFail()
-    .then((user) => sendSuccessResponse(res, user))
-    .catch((err) => sendErrorResponse(res, err));
+  try {
+    const user = await User.findByIdAndUpdate(userId, update, options).orFail();
+
+    return sendSuccessResponse(res, user);
+  } catch (err) {
+    return sendErrorResponse(res, err);
+  }
 }
 
 module.exports = { getUsers, getCurrentUser, createUser, login, updateProfile };
