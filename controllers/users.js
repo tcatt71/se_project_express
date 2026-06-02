@@ -25,19 +25,20 @@ async function getCurrentUser(req, res) {
   }
 }
 
-function createUser(req, res) {
+async function createUser(req, res) {
   const { name, avatar, email, password } = req.body;
 
-  bcrypt
-    .hash(password, 10)
-    .then((hash) => User.create({ name, avatar, email, password: hash }))
-    .then((user) => {
-      const userObj = user.toObject();
-      delete userObj.password;
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, avatar, email, password: hash });
 
-      sendSuccessResponse(res, userObj, 201);
-    })
-    .catch((err) => sendErrorResponse(res, err));
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    return sendSuccessResponse(res, userObj, 201);
+  } catch (err) {
+    return sendErrorResponse(res, err);
+  }
 }
 
 function login(req, res) {
