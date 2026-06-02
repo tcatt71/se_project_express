@@ -1,17 +1,31 @@
 const ClothingItem = require("../models/clothingItem");
 const { sendErrorResponse, sendSuccessResponse } = require("../utils/helpers");
 
-function getItems(req, res) {
-  ClothingItem.find({})
-    .then((clothingItems) => sendSuccessResponse(res, clothingItems))
-    .catch((err) => sendErrorResponse(res, err));
+async function getItems(req, res) {
+  try {
+    const clothingItems = await ClothingItem.find({});
+
+    return sendSuccessResponse(res, clothingItems);
+  } catch (err) {
+    return sendErrorResponse(res, err);
+  }
 }
 
-function createItem(req, res) {
+async function createItem(req, res) {
   const { name, weather, imageUrl } = req.body;
-  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
-    .then((clothingItem) => sendSuccessResponse(res, clothingItem, 201))
-    .catch((err) => sendErrorResponse(res, err));
+
+  try {
+    const clothingItem = await ClothingItem.create({
+      name,
+      weather,
+      imageUrl,
+      owner: req.user._id,
+    });
+
+    return sendSuccessResponse(res, clothingItem, 201);
+  } catch (err) {
+    return sendErrorResponse(res, err);
+  }
 }
 
 function deleteItem(req, res) {
