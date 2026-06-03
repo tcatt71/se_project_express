@@ -7,49 +7,38 @@ const {
   INTERNAL_SERVER_ERROR,
 } = require("./errors");
 
-function getStatusCode(err) {
-  if (err.name === "CastError" || err.name === "ValidationError") {
-    return BAD_REQUEST;
+function sendErrorResponse(res, err) {
+  if (err.name === "CastError") {
+    return res.status(BAD_REQUEST).json({ message: "Invalid input provided" });
+  }
+  if (err.name === "ValidationError") {
+    return res
+      .status(BAD_REQUEST)
+      .json({ message: "Missing or invalid data provided" });
   }
   if (err.name === "AuthenticationError") {
-    return UNAUTHORIZED;
-  }
-  if (err.name === "ForbiddenError") {
-    return FORBIDDEN;
-  }
-  if (err.name === "DocumentNotFoundError") {
-    return NOT_FOUND;
-  }
-  if (err.code === 11000) {
-    return CONFLICT;
-  }
-  return INTERNAL_SERVER_ERROR;
-}
-
-function sendErrorResponse(res, err) {
-  const statusCode = getStatusCode(err);
-
-  if (statusCode === UNAUTHORIZED) {
     return res
-      .status(statusCode)
+      .status(UNAUTHORIZED)
       .json({ message: "Incorrect email or password" });
   }
-  if (statusCode === FORBIDDEN) {
+  if (err.name === "ForbiddenError") {
     return res
-      .status(statusCode)
+      .status(FORBIDDEN)
       .json({ message: "You are not allowed to perform this operation" });
   }
-  if (statusCode === INTERNAL_SERVER_ERROR) {
+  if (err.name === "DocumentNotFoundError") {
     return res
-      .status(statusCode)
-      .json({ message: "An error has occurred on the server." });
+      .status(NOT_FOUND)
+      .json({ message: "Requested resource not found" });
   }
-  if (statusCode === CONFLICT) {
+  if (err.code === 11000) {
     return res
-      .status(statusCode)
+      .status(CONFLICT)
       .json({ message: "An account with this email already exists." });
   }
-  return res.status(statusCode).json({ message: err.message });
+  return res
+    .status(INTERNAL_SERVER_ERROR)
+    .json({ message: "An error has occurred on the server." });
 }
 
 function sendSuccessResponse(res, data, statusCode = 200) {
