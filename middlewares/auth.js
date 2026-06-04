@@ -23,7 +23,7 @@ function authMiddleware(req, res, next) {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return handleAuthError(res);
+    return sendErrorResponse(res, err);
   }
 
   req.user = payload;
