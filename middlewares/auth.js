@@ -1,20 +1,13 @@
 const jwt = require("jsonwebtoken");
-const { sendErrorResponse } = require("../utils/helpers");
+const { sendErrorResponse, createAuthError } = require("../utils/helpers");
 
 const { JWT_SECRET } = require("../utils/config");
-
-function handleAuthError(res) {
-  const error = new Error();
-  error.name = "AuthenticationError";
-
-  return sendErrorResponse(res, error);
-}
 
 function authMiddleware(req, res, next) {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    return handleAuthError(res);
+    throw createAuthError();
   }
 
   const token = authorization.replace("Bearer ", "");
