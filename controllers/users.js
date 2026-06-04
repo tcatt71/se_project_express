@@ -45,7 +45,7 @@ async function login(req, res) {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    const err = new Error("Email and password are required");
+    const err = new Error();
     err.name = "ValidationError";
 
     return sendErrorResponse(res, err);
