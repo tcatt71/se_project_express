@@ -47,7 +47,6 @@ async function login(req, res) {
   if (!email || !password) {
     const err = new Error();
     err.name = "ValidationError";
-
     return sendErrorResponse(res, err);
   }
 

@@ -48,7 +48,6 @@ function sendSuccessResponse(res, data, statusCode = 200) {
 function createAuthError() {
   const error = new Error();
   error.name = "AuthenticationError";
-
   return error;
 }
 
