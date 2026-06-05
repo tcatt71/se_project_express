@@ -7,7 +7,8 @@ function authMiddleware(req, res, next) {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    throw createAuthError();
+    const err = createAuthError();
+    return sendErrorResponse(res, err);
   }
 
   const token = authorization.replace("Bearer ", "");
