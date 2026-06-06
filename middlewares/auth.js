@@ -1,20 +1,14 @@
 const jwt = require("jsonwebtoken");
-const { sendErrorResponse } = require("../utils/helpers");
+const { sendErrorResponse, createAuthError } = require("../utils/helpers");
 
 const { JWT_SECRET } = require("../utils/config");
-
-function handleAuthError(res) {
-  const error = new Error("Authorization Error");
-  error.name = "AuthenticationError";
-
-  return sendErrorResponse(res, error);
-}
 
 function authMiddleware(req, res, next) {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    return handleAuthError(res);
+    const err = createAuthError();
+    return sendErrorResponse(res, err);
   }
 
   const token = authorization.replace("Bearer ", "");
@@ -23,7 +17,7 @@ function authMiddleware(req, res, next) {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return handleAuthError(res);
+    return sendErrorResponse(res, err);
   }
 
   req.user = payload;
