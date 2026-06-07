@@ -17,7 +17,8 @@ function authMiddleware(req, res, next) {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return sendErrorResponse(res, err);
+    const error = createAuthError();
+    return sendErrorResponse(res, error);
   }
 
   req.user = payload;
