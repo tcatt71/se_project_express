@@ -1,15 +1,15 @@
 # WTWR (What to Wear?): Back End
 
-The back-end project is focused on creating a server for the WTWR application. You'll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
+This is the back-end for TripleTen's What to Wear (WTWR) project. This full stack app provides the user with an easy way to select clothes to wear from their wardrobe based on the temperature outside.
 
-## Running the Project
+This is a full stack MERN application utilizing React, Node.js, Express, and MongoDB.
+
+## Environment Configuration
 
 `.env.example file` - The .env.example file is provide as a template to use for your own env file. Copy its contents into your own .env file and use a value of your choosing as the JWT_SECRET variable.
+
+## Running the Project
 
 `npm run start` — to launch the server
 
 `npm run dev` — to launch the server with the hot reload feature
-
-### Testing
-
-Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
