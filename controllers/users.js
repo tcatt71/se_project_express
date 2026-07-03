@@ -5,15 +5,6 @@ const User = require("../models/user");
 const { sendErrorResponse, sendSuccessResponse } = require("../utils/helpers");
 const { JWT_SECRET } = require("../utils/config");
 
-async function getUsers(req, res) {
-  try {
-    const users = await User.find({});
-    return sendSuccessResponse(res, users);
-  } catch (err) {
-    return sendErrorResponse(res, err);
-  }
-}
-
 async function getCurrentUser(req, res) {
   const { _id: userId } = req.user;
 
@@ -78,4 +69,4 @@ async function updateProfile(req, res) {
   }
 }
 
-module.exports = { getUsers, getCurrentUser, createUser, login, updateProfile };
+module.exports = { getCurrentUser, createUser, login, updateProfile };
