@@ -63,7 +63,16 @@ async function updateProfile(req, res) {
   const { _id: userId } = req.user;
   const { name, avatar } = req.body;
 
-  const update = { name, avatar };
+  const update = {};
+
+  if (name !== undefined) {
+    update.name = name;
+  }
+
+  if (avatar !== undefined) {
+    update.avatar = avatar;
+  }
+
   const options = { runValidators: true, new: true };
 
   try {
