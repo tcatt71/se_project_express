@@ -21,6 +21,9 @@ function sendErrorResponse(res, err) {
       .status(UNAUTHORIZED)
       .json({ message: "Incorrect email or password" });
   }
+  if (err.name === "UnauthorizedError") {
+    return res.status(UNAUTHORIZED).json({ message: "Authorization required" });
+  }
   if (err.name === "ForbiddenError") {
     return res
       .status(FORBIDDEN)
@@ -51,4 +54,8 @@ function createAuthError() {
   return error;
 }
 
-module.exports = { sendErrorResponse, sendSuccessResponse, createAuthError };
+module.exports = {
+  sendErrorResponse,
+  sendSuccessResponse,
+  createAuthError,
+};
