@@ -13,3 +13,7 @@ This is a full stack MERN application utilizing React, Node.js, Express, and Mon
 `npm run start` — to launch the server
 
 `npm run dev` — to launch the server with the hot reload feature
+
+## Project Pitch Video
+
+Check out [this video](https://drive.google.com/file/d/1FXSkRSw3P9elfRizscTSwlQSOeOj0_-w/view?usp=sharing), where I describe my project and a challenge I faced while building it.
