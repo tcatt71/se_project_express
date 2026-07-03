@@ -19,6 +19,12 @@ async function getCurrentUser(req, res) {
 async function createUser(req, res) {
   const { name, avatar, email, password } = req.body;
 
+  if (!email || !password) {
+    const err = new Error();
+    err.name = "ValidationError";
+    return sendErrorResponse(res, err);
+  }
+
   try {
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({ name, avatar, email, password: hash });
