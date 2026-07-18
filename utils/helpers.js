@@ -45,7 +45,7 @@ function sendErrorResponse(res, err) {
 }
 
 function sendSuccessResponse(res, data, statusCode = 200) {
-  return res.status(statusCode).json({ data });
+  return res.status(statusCode).json(data);
 }
 
 function createAuthError() {
