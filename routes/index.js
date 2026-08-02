@@ -7,8 +7,8 @@ const { NOT_FOUND } = require("../utils/errors");
 router.post("/signin", login);
 router.post("/signup", createUser);
 
-router.use("/", usersRouter);
 router.use("/", clothingItemsRouter);
+router.use("/", usersRouter);
 
 router.use((req, res) =>
   res.status(NOT_FOUND).json({
