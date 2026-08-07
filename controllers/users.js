@@ -2,27 +2,28 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
-const { sendErrorResponse, sendSuccessResponse } = require("../utils/helpers");
+const { sendSuccessResponse } = require("../utils/helpers");
 const { JWT_SECRET } = require("../utils/config");
 
-async function getCurrentUser(req, res) {
+async function getCurrentUser(req, res, next) {
   const { _id: userId } = req.user;
 
   try {
     const user = await User.findById(userId).orFail();
     return sendSuccessResponse(res, user);
   } catch (err) {
-    return sendErrorResponse(res, err);
+    return next(err);
   }
 }
 
-async function createUser(req, res) {
+async function createUser(req, res, next) {
   const { name, avatar, email, password } = req.body;
 
   if (!email || !password) {
     const err = new Error();
     err.name = "ValidationError";
-    return sendErrorResponse(res, err);
+    next(err);
+    return;
   }
 
   try {
@@ -32,19 +33,20 @@ async function createUser(req, res) {
     const userObj = user.toObject();
     delete userObj.password;
 
-    return sendSuccessResponse(res, userObj, 201);
+    sendSuccessResponse(res, userObj, 201);
   } catch (err) {
-    return sendErrorResponse(res, err);
+    next(err);
   }
 }
 
-async function login(req, res) {
+async function login(req, res, next) {
   const { email, password } = req.body;
 
   if (!email || !password) {
     const err = new Error();
     err.name = "ValidationError";
-    return sendErrorResponse(res, err);
+    next(err);
+    return;
   }
 
   try {
@@ -53,13 +55,13 @@ async function login(req, res) {
       expiresIn: "7d",
     });
 
-    return sendSuccessResponse(res, { token });
+    sendSuccessResponse(res, { token });
   } catch (err) {
-    return sendErrorResponse(res, err);
+    next(err);
   }
 }
 
-async function updateProfile(req, res) {
+async function updateProfile(req, res, next) {
   const { _id: userId } = req.user;
   const { name, avatar } = req.body;
 
@@ -78,9 +80,9 @@ async function updateProfile(req, res) {
   try {
     const user = await User.findByIdAndUpdate(userId, update, options).orFail();
 
-    return sendSuccessResponse(res, user);
+    sendSuccessResponse(res, user);
   } catch (err) {
-    return sendErrorResponse(res, err);
+    next(err);
   }
 }
 
