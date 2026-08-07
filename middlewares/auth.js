@@ -22,7 +22,8 @@ function authMiddleware(req, res, next) {
   } catch (err) {
     const error = new Error();
     error.name = "UnauthorizedError";
-    return sendErrorResponse(res, error);
+
+    return next(error);
   }
 }
 
