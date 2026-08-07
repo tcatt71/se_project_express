@@ -1,17 +1,17 @@
 const ClothingItem = require("../models/clothingItem");
-const { sendErrorResponse, sendSuccessResponse } = require("../utils/helpers");
+const { sendSuccessResponse } = require("../utils/helpers");
 
-async function getItems(req, res) {
+async function getItems(req, res, next) {
   try {
     const clothingItems = await ClothingItem.find({});
 
-    return sendSuccessResponse(res, clothingItems);
+    sendSuccessResponse(res, clothingItems);
   } catch (err) {
-    return sendErrorResponse(res, err);
+    next(err);
   }
 }
 
-async function createItem(req, res) {
+async function createItem(req, res, next) {
   const { name, weather, imageUrl } = req.body;
 
   try {
@@ -22,13 +22,13 @@ async function createItem(req, res) {
       owner: req.user._id,
     });
 
-    return sendSuccessResponse(res, clothingItem, 201);
+    sendSuccessResponse(res, clothingItem, 201);
   } catch (err) {
-    return sendErrorResponse(res, err);
+    next(err);
   }
 }
 
-async function deleteItem(req, res) {
+async function deleteItem(req, res, next) {
   const { itemId } = req.params;
 
   try {
@@ -41,13 +41,13 @@ async function deleteItem(req, res) {
     }
 
     await clothingItem.deleteOne();
-    return sendSuccessResponse(res, clothingItem);
+    sendSuccessResponse(res, clothingItem);
   } catch (err) {
-    return sendErrorResponse(res, err);
+    next(err);
   }
 }
 
-async function toggleLike(req, res) {
+async function toggleLike(req, res, next) {
   const { itemId } = req.params;
   const { _id: userId } = req.user;
   const operation = req.method === "DELETE" ? "$pull" : "$addToSet";
@@ -59,9 +59,9 @@ async function toggleLike(req, res) {
       { new: true }
     ).orFail();
 
-    return sendSuccessResponse(res, like);
+    sendSuccessResponse(res, like);
   } catch (err) {
-    return sendErrorResponse(res, err);
+    next(err);
   }
 }
 
