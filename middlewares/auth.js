@@ -17,15 +17,16 @@ function authMiddleware(req, res, next) {
 
   try {
     payload = jwt.verify(token, JWT_SECRET);
-    req.user = payload;
-
-    next();
   } catch (err) {
     const error = new Error();
     error.name = "UnauthorizedError";
 
     next(error);
+    return;
   }
+
+  req.user = payload;
+  next();
 }
 
 module.exports = { authMiddleware };
