@@ -1,14 +1,13 @@
 const jwt = require("jsonwebtoken");
-const { createAuthError } = require("../utils/helpers");
 
 const { JWT_SECRET } = require("../utils/config");
+const UnauthorizedError = require("../errors/UnauthorizedError");
 
 function authMiddleware(req, res, next) {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    const err = createAuthError();
-    next(err);
+    next(new UnauthorizedError("Incorrect email or password"));
     return;
   }
 
@@ -18,10 +17,7 @@ function authMiddleware(req, res, next) {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    const error = new Error();
-    error.name = "UnauthorizedError";
-
-    next(error);
+    next(new UnauthorizedError("Authorization required"));
     return;
   }
 
