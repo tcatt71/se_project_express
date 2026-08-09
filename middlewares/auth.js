@@ -7,7 +7,7 @@ function authMiddleware(req, res, next) {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    next(new UnauthorizedError("Incorrect email or password"));
+    next(new UnauthorizedError("Authorization required"));
     return;
   }
 
