@@ -4,6 +4,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { sendSuccessResponse } = require("../utils/helpers");
 const { JWT_SECRET } = require("../utils/config");
+const NotFoundError = require("../errors/NotFoundError");
+const BadRequestError = require("../errors/BadRequestError");
+const ConflictError = require("../errors/ConflictError");
+const UnauthorizedError = require("../errors/UnauthorizedError");
 
 async function getCurrentUser(req, res, next) {
   const { _id: userId } = req.user;
@@ -12,6 +16,9 @@ async function getCurrentUser(req, res, next) {
     const user = await User.findById(userId).orFail();
     return sendSuccessResponse(res, user);
   } catch (err) {
+    if (err.name === "DocumentNotFoundError" || err.name === "CastError") {
+      return next(new NotFoundError("No user with matching ID found"));
+    }
     return next(err);
   }
 }
@@ -20,10 +27,7 @@ async function createUser(req, res, next) {
   const { name, avatar, email, password } = req.body;
 
   if (!email || !password) {
-    const err = new Error();
-    err.name = "ValidationError";
-    next(err);
-    return;
+    return next(new BadRequestError("Missing or invalid data provided"));
   }
 
   try {
@@ -33,9 +37,17 @@ async function createUser(req, res, next) {
     const userObj = user.toObject();
     delete userObj.password;
 
-    sendSuccessResponse(res, userObj, 201);
+    return sendSuccessResponse(res, userObj, 201);
   } catch (err) {
-    next(err);
+    if (err.name === "ValidationError") {
+      return next(new BadRequestError("Missing or invalid data provided"));
+    }
+    if (err.code === 11000) {
+      return next(
+        new ConflictError("An account with this email already exists")
+      );
+    }
+    return next(err);
   }
 }
 
@@ -43,10 +55,7 @@ async function login(req, res, next) {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    const err = new Error();
-    err.name = "ValidationError";
-    next(err);
-    return;
+    return next(new BadRequestError("Missing or invalid data provided"));
   }
 
   try {
@@ -55,9 +64,9 @@ async function login(req, res, next) {
       expiresIn: "7d",
     });
 
-    sendSuccessResponse(res, { token });
+    return sendSuccessResponse(res, { token });
   } catch (err) {
-    next(err);
+    return next(new UnauthorizedError("Incorrect email or password"));
   }
 }
 
@@ -80,9 +89,15 @@ async function updateProfile(req, res, next) {
   try {
     const user = await User.findByIdAndUpdate(userId, update, options).orFail();
 
-    sendSuccessResponse(res, user);
+    return sendSuccessResponse(res, user);
   } catch (err) {
-    next(err);
+    if (err.name === "DocumentNotFoundError") {
+      return next(new NotFoundError("User not found"));
+    }
+    if (err.name === "ValidationError" || err.name === "CastError") {
+      return next(new BadRequestError("Invalid data provided"));
+    }
+    return next(err);
   }
 }
 
