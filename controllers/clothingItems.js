@@ -1,13 +1,17 @@
 const ClothingItem = require("../models/clothingItem");
 const { sendSuccessResponse } = require("../utils/helpers");
 
+const NotFoundError = require("../errors/NotFoundError");
+const ForbiddenError = require("../errors/ForbiddenError");
+const BadRequestError = require("../errors/BadRequestError");
+
 async function getItems(req, res, next) {
   try {
     const clothingItems = await ClothingItem.find({});
 
-    sendSuccessResponse(res, clothingItems);
+    return sendSuccessResponse(res, clothingItems);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 }
 
@@ -22,9 +26,14 @@ async function createItem(req, res, next) {
       owner: req.user._id,
     });
 
-    sendSuccessResponse(res, clothingItem, 201);
+    return sendSuccessResponse(res, clothingItem, 201);
   } catch (err) {
-    next(err);
+    if (err.name === "ValidationError") {
+      return next(
+        new BadRequestError("Invalid data provided for item creation")
+      );
+    }
+    return next(err);
   }
 }
 
@@ -35,15 +44,18 @@ async function deleteItem(req, res, next) {
     const clothingItem = await ClothingItem.findById(itemId).orFail();
 
     if (clothingItem.owner.toString() !== req.user._id) {
-      const err = new Error();
-      err.name = "ForbiddenError";
-      throw err;
+      return next(
+        new ForbiddenError("You are not allowed to delete this item")
+      );
     }
 
     await clothingItem.deleteOne();
-    sendSuccessResponse(res, clothingItem);
+    return sendSuccessResponse(res, clothingItem);
   } catch (err) {
-    next(err);
+    if (err.name === "DocumentNotFoundError" || err.name === "CastError") {
+      return next(new NotFoundError("Item not found"));
+    }
+    return next(err);
   }
 }
 
@@ -59,9 +71,15 @@ async function toggleLike(req, res, next) {
       { new: true }
     ).orFail();
 
-    sendSuccessResponse(res, like);
+    return sendSuccessResponse(res, like);
   } catch (err) {
-    next(err);
+    if (err.name === "DocumentNotFoundError" || err.name === "CastError") {
+      return next(new NotFoundError("Item not found"));
+    }
+    if (err.name === "ValidationError") {
+      return next(new BadRequestError("Invalid data provided"));
+    }
+    return next(err);
   }
 }
 
