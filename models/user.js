@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
-const { createAuthError } = require("../utils/helpers");
+const UnauthorizedError = require("../errors/UnauthorizedError");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// Returns a Rejected Promise if an error is thrown.
 userSchema.statics.findUserByCredentials = async function findUserByCredentials(
   email,
   password
@@ -44,12 +45,12 @@ userSchema.statics.findUserByCredentials = async function findUserByCredentials(
   const user = await this.findOne({ email }).select("+password");
 
   if (!user) {
-    throw createAuthError();
+    throw new UnauthorizedError("Incorrect email or password");
   }
   const matched = await bcrypt.compare(password, user.password);
 
   if (!matched) {
-    throw createAuthError();
+    throw new UnauthorizedError("Incorrect email or password");
   }
   return user;
 };
