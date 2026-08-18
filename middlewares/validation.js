@@ -1,8 +1,8 @@
 const { Joi, celebrate } = require("celebrate");
-const { validator } = require("validator");
+const validator = require("validator");
 
 function validateURL(value, helpers) {
-  if (validator.isUrl(value)) {
+  if (validator.isURL(value)) {
     return value;
   }
   return helpers.error("string.uri");
