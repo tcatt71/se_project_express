@@ -21,9 +21,9 @@ const validateCardBody = celebrate({
         "string.empty": "The 'imageUrl' field must be filled in",
         "string.uri": "The 'imageUrl' field must be a valid url",
       }),
-    }),
-  });
-}
+    })
+    .unknown(true),
+});
 
 // The user info body when a user is created
 const validateUserBody = celebrate({
