@@ -3,7 +3,7 @@ const usersRouter = require("./users");
 const clothingItemsRouter = require("./clothingItems");
 const { createUser, login } = require("../controllers/users");
 
-const { NotFoundError } = require("../middlewares/errorHandler");
+const NotFoundError = require("../errors/NotFoundError");
 const {
   validateLoginBody,
   validateUserBody,
