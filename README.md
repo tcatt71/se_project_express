@@ -11,9 +11,19 @@ This is a full stack MERN application utilizing React, Node.js, Express, and Mon
 ## Running the Project
 
 `npm run start` — to launch the server
-
 `npm run dev` — to launch the server with the hot reload feature
 
-## Project Pitch Video
+## Deployed Application
 
-Check out [this video](https://drive.google.com/file/d/1FXSkRSw3P9elfRizscTSwlQSOeOj0_-w/view?usp=sharing), where I describe my project and a challenge I faced while building it.
+https://apps.barabesta.is
+
+## Frontend GitHub Repository
+
+The frontend repository can be found [here](https://github.com/tcatt71/se_project_react).
+
+## Project Pitch Videos
+
+Check out these videos, where I describe my project and some challenges I faced while building it:
+
+- [Backend Authentication and Authorization](https://drive.google.com/file/d/1FXSkRSw3P9elfRizscTSwlQSOeOj0_-w/view?usp=sharing)
+- [Advanced Middleware and Deployment](https://drive.google.com/file/d/1yfA86DYCE-e4DaXhO2g6PYKreV4Q0SUv/view?usp=sharing)
