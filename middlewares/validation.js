@@ -62,6 +62,19 @@ const validateLoginBody = celebrate({
   }),
 });
 
+// The user info body when a profile is updated
+const validateUpdateProfileBody = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).messages({
+      "string.min": "The minimum length of the 'name' field is 2",
+      "string.max": "The maximum length of the 'name' field is 30",
+    }),
+    avatar: Joi.string().custom(validateURL).messages({
+      "string.uri": "The 'image' field must be a valid url",
+    }),
+  }),
+});
+
 // User and clothing item IDs when they are accessed
 const validateId = celebrate({
   params: Joi.object().keys({
@@ -73,5 +86,6 @@ module.exports = {
   validateCardBody,
   validateUserBody,
   validateLoginBody,
+  validateUpdateProfileBody,
   validateId,
 };
