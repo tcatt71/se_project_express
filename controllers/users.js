@@ -66,7 +66,10 @@ async function login(req, res, next) {
 
     return sendSuccessResponse(res, { token });
   } catch (err) {
-    return next(new UnauthorizedError("Incorrect email or password"));
+    if (err.message === "Incorrect email or password") {
+      return next(new UnauthorizedError("Incorrect email or password"));
+    }
+    return next(err);
   }
 }
 
